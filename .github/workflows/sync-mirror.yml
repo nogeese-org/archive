@@ -31,4 +31,6 @@ jobs:
       run: |
         git add docs/mirror/*
         git commit -m "Sync from mirror repository"
-        git push origin main  # Or replace with the desired branch
+        git push https://github.com/nogeese-org/archive.git HEAD:main  # Push with the token authentication
+      env:
+        GH_TOKEN: ${{ secrets.GH_TOKEN_MIRROR_ARCHIVED }}
