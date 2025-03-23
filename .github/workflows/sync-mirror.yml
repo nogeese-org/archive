@@ -31,6 +31,6 @@ jobs:
       run: |
         git add docs/mirror/*
         git commit -m "Sync from mirror repository"
-        git push https://github.com/nogeese-org/archive.git HEAD:main
+        git push https://github.com/nogeese-org/archive HEAD:main
       env:
         GITHUB_TOKEN: ${{ secrets.ACTIONS_PAT }}
