@@ -12,7 +12,7 @@ jobs:
       - name: Checkout Archive Repository
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GH_TOKEN }}
+          token: ${{ secrets.GH_TOKEN_MIRROR_ARCHIVED }}
           fetch-depth: 0
 
       - name: Remove old mirror directory
