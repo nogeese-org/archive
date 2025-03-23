@@ -1,0 +1,30 @@
+name: Sync Mirror to Archive
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'  # Runs every 5 minutes
+  workflow_dispatch:  # Allows manual trigger
+
+jobs:
+  sync-mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Archive Repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+          fetch-depth: 0
+
+      - name: Remove old mirror directory
+        run: rm -rf docs/mirror
+
+      - name: Clone Mirror Repository into docs/mirror
+        run: git clone --depth=1 https://github.com/nogeese-org/mirror.git docs/mirror
+
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "actions@github.com"
+          git add docs/mirror
+          git commit -m "Auto-sync mirror into docs/mirror" || exit 0  # Avoid error if no changes
+          git push
