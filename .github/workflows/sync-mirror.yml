@@ -1,0 +1,34 @@
+name: Sync Source Repository to Archive
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"  # Run every 5 minutes
+  workflow_dispatch:  # Allows manual triggering
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout target repository
+      uses: actions/checkout@v2
+
+    - name: Set up Git
+      run: |
+        git config --global user.name "nogeese-org"
+        git config --global user.email "leoszen@aol.com"
+
+    - name: Clone source repository
+      run: |
+        git clone https://github.com/nogeese-org/mirror.git source-repo
+
+    - name: Copy content from source to docs/mirror in target repository
+      run: |
+        mkdir -p docs/mirror
+        cp -r source-repo/* docs/mirror/
+
+    - name: Commit and push changes to target repository
+      run: |
+        git add docs/mirror/*
+        git commit -m "Sync from mirror repository"
+        git push origin main  # Or replace with the desired branch
