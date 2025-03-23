@@ -15,8 +15,8 @@ jobs:
 
     - name: Set up Git
       run: |
-        git config --global user.name "github-actions[bot]"
-        git config --global user.email "actions@github.com"
+        git config --global user.name "nogeese-org"
+        git config --global user.email "leoszen@aol.com"
 
     - name: Clone source repository
       run: |
@@ -31,6 +31,4 @@ jobs:
       run: |
         git add docs/mirror/*
         git commit -m "Sync from mirror repository"
-        git push https://github.com/nogeese-org/archive.git HEAD:main  # Push with the token authentication
-      env:
-        GH_TOKEN: ${{ secrets.GH_TOKEN_MIRROR_ARCHIVED }}
+        git push https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/nogeese-org/archive.git HEAD:main
