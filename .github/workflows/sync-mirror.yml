@@ -19,7 +19,7 @@ jobs:
         run: rm -rf docs/mirror
 
       - name: Clone Mirror Repository into docs/mirror
-        run: git clone --depth=1 https://github.com/nogeese-org/mirror.git docs/mirror
+        run: git clone https://github.com/nogeese-org/mirror.git docs/mirror
 
       - name: Commit and Push Changes
         run: |
