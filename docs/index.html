@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Archive File Browser</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    h1 { font-size: 24px; }
+    ul { list-style: none; padding: 0; }
+    li { margin: 8px 0; }
+    a { text-decoration: none; color: #0366d6; }
+    a:hover { text-decoration: underline; }
+    .breadcrumb { margin-bottom: 20px; }
+  </style>
+</head>
+<body>
+  <h1>Archive File Browser</h1>
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <div id="content">Loading directory contents...</div>
+
+  <script>
+    const BASE_DIR = 'docs'; // Set "docs" as the home directory
+    const GITHUB_API = 'https://api.github.com/repos/nogeese-org/archive/contents/';
+    const MIRROR_URL = 'https://archive.leon8326.org/';
+    
+    const params = new URLSearchParams(window.location.search);
+    let currentDir = params.get('dir') || BASE_DIR;
+    
+    // Prevent navigation outside "docs"
+    if (!currentDir.startsWith(BASE_DIR)) {
+      currentDir = BASE_DIR;
+    }
+
+    // Breadcrumb navigation
+    const breadcrumbEl = document.getElementById('breadcrumb');
+    if (currentDir === BASE_DIR) {
+      breadcrumbEl.innerHTML = '<strong>Home</strong>';
+    } else {
+      const parts = currentDir.replace(BASE_DIR + '/', '').split('/');
+      let path = BASE_DIR;
+      breadcrumbEl.innerHTML = `<a href="?dir=${BASE_DIR}">Home</a> / `;
+      parts.forEach((part, index) => {
+        path += '/' + part;
+        if (index < parts.length - 1) {
+          breadcrumbEl.innerHTML += `<a href="?dir=${encodeURIComponent(path)}">${part}</a> / `;
+        } else {
+          breadcrumbEl.innerHTML += `<strong>${part}</strong>`;
+        }
+      });
+    }
+
+    const apiUrl = `${GITHUB_API}${currentDir}`;
+    
+    fetch(apiUrl)
+      .then(response => {
+        if (!response.ok) throw new Error('Failed to load directory contents.');
+        return response.json();
+      })
+      .then(data => {
+        const contentEl = document.getElementById('content');
+        contentEl.innerHTML = '';
+        const ul = document.createElement('ul');
+
+        data.forEach(item => {
+          const name = item.name;
+          const path = item.path;
+          const li = document.createElement('li');
+          if (item.type === 'dir') {
+            li.innerHTML = `<a href="?dir=${encodeURIComponent(path)}">📁 ${name}</a>`;
+          } else {
+            // Remove "docs" from the path when constructing the file URL
+            const filePath = path.replace(`${BASE_DIR}/`, '');
+            li.innerHTML = `<a href="${MIRROR_URL}${filePath}" target="_blank">📄 ${name}</a>`;
+          }
+          ul.appendChild(li);
+        });
+        contentEl.appendChild(ul);
+      })
+      .catch(error => {
+        document.getElementById('content').innerHTML = `<p>Error: ${error.message}</p>`;
+      });
+  </script>
+</body>
+</html>
