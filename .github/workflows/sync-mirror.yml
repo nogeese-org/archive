@@ -39,5 +39,5 @@ jobs:
         git config user.name "github-actions[bot]"
         git config user.email "actions@github.com"
         git add docs/mirror/*
-        git commit -m "Sync from mirror repository"
+        git commit -m "Sync from mirror repository" || exit 0
         git push git@github.com:nogeese-org/archive.git HEAD:main
