@@ -13,10 +13,12 @@ jobs:
     - name: Checkout the repository
       uses: actions/checkout@v2
 
-    - name: Set up Git
+    - name: Set up SSH key
       run: |
-        git config --global user.name "github-actions[bot]"
-        git config --global user.email "actions@github.com"
+        mkdir -p ~/.ssh
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan github.com >> ~/.ssh/known_hosts
 
     - name: Clone the source repo
       run: |
@@ -31,6 +33,4 @@ jobs:
       run: |
         git add docs/mirror/*
         git commit -m "Sync from mirror repository"
-        git push https://github.com/nogeese-org/archive HEAD:main
-      env:
-        GITHUB_TOKEN: ${{ secrets.ACTIONS_PAT }}
+        git push git@github.com:nogeese-org/archive.git HEAD:main
