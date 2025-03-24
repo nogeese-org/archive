@@ -19,9 +19,9 @@
   <div id="content">Loading directory contents...</div>
 
   <script>
-    const BASE_DIR = 'docs'; // Set "docs" as the home directory
+    const BASE_DIR = 'docs'; // If using a catalog (like docs) change this to it's name
     const GITHUB_API = 'https://api.github.com/repos/nogeese-org/archive/contents/';
-    const MIRROR_URL = 'https://archive.leon8326.org/';
+    const MIRROR_URL = 'https://archive.leon8326.org/'; // What's the website the files are hosted on? https://raw.githubusercontent.com/[repo]/main/ is recommended
     
     const params = new URLSearchParams(window.location.search);
     let currentDir = params.get('dir') || BASE_DIR;
